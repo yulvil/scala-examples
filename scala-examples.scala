@@ -13,11 +13,28 @@ val y = "abc"
 "abcdefghi".slice(1,3)     // String = bc
 List(1,2,3).mkString("|")  // String = 1|2|3
 List(1,2,3).mkString("{{", "|", "}}")  // String = {{1|2|3}}
+s"x is $x"                 // s"" will interpret $
+val s = """very
+long
+string"""
+val i = "123".toInt
+
+String.format("%-10s", "Ab")   // "Ab        "
+
+println("abc")
+print("Q: ")
+
+
+/* Numbers */
+
+123.toString               // String = 123
+-123.abs                   // Int = 123
+1-123.abs                  // Int = -122
 
 
 /* List */
 
-val fruits = List( "apple", "orange", "raisin", "kiwi" )   // List[String] = List(apple, orange, raisin, kiwi)
+val fruits = List("apple", "orange", "raisin", "kiwi")     // List[String] = List(apple, orange, raisin, kiwi)
 val grades = List(60,70,80)                                // List[Int] = List(60, 70, 80)
 val mixed = List(1,"a",List(1))                            // List[Any] = List(1, a, List(1))
 val nums:List[Double] = List(6,7,8)                        // List[Double] = List(6.0, 7.0, 8.0)
@@ -38,6 +55,7 @@ List(5,3,8,6,1,9,0,7,2,4).sorted                           // List[Int] = List(0
 
 (0 /: List(1,2,3,4,5,6,7,8,9,10))(_ + _)                   // Int = 55
 (List(1,2,3,4,5,6,7,8,9,10) :\ 0)(_ + _)                   // Int = 55
+
 
 /* Tuples */
 def minmax(a: Int, b: Int): (Int, Int) = if (a < b) (a, b) else (b, a)
@@ -68,14 +86,25 @@ val x = for(i<-(1 to 3); j<-(10 to 12)) yield (i,j)                   // Vector(
 for { a <- List(1,2,3); b <- List("a","b"); c <- List(4,5,6) } yield (a,b,c)
 // List[(Int, String, Int)] = List((1,a,4), (1,a,5), (1,a,6), (1,b,4), (1,b,5), (1,b,6), (2,a,4), (2,a,5), (2,a,6), (2,b,4), (2,b,5), (2,b,6), (3,a,4), (3,a,5), (3,a,6), (3,b,4), (3,b,5), (3,b,6))
 
+
 /* Maps */
 val m = Map(1->2, 3->4)
 Map("key1" -> "val1", "key2" -> "val2") foreach { case (k, v) => print(k,v) }   // (key1,val1)(key2,val2)
 for ((k,v) <- Map("key11" -> "val1", "key2" -> "val2")) print(k,v)              // (key1,val1)(key2,val2)
 
+
+/* For loops */
+val result = for(i <- 0 to 10; j <- 0 to i) yield (i, j)   
+
+
 /* Functions */
+def myadd(x: Int, y: Int) : Int = { return x + y } // Return type required when using return statement
+def myadd(x: Int, y: Int) : Int = { x + y }        // Return statement optional
 def myadd(x: Int, y: Int) = { x + y }              // Return type inferred
 myadd(4,5)    // Int = 9
+
+def func1(n:Int = 2, str:String = "bora") {println(str*n)}  // borabora
+func1(str="cha", n=3)                                       // chachacha
 
 def myadd2(x: Int, y: Int) : Double = { x + y }    // Return type explicit
 myadd2(4,5)   // Double = 9.0
