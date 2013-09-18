@@ -34,6 +34,9 @@ List(1,2,3).mkString("{{", "|", "}}")  // String = {{1|2|3}}
 s"Req: $req"               // String interpolation
 f"${1.0*5}%08.2f"          // printf style formatting
 "ab" == new String("a") + new String("b") // True, Compare strings with ==
+val s = """very
+long
+string"""
 
 
 /* Control statements / Blocks */
@@ -56,7 +59,7 @@ val doubleEven = for (i <- 1 to 10; if i % 2 == 0) yield i * 2                //
 
 /* List */
 
-val fruits = List( "apple", "orange", "raisin", "kiwi" )   // List[String] = List(apple, orange, raisin, kiwi)
+val fruits = List("apple", "orange", "raisin", "kiwi")     // List[String] = List(apple, orange, raisin, kiwi)
 val grades = List(60,70,80)                                // List[Int] = List(60, 70, 80)
 val mixed = List(1,"a",List(1))                            // List[Any] = List(1, a, List(1))
 val nums:List[Double] = List(6,7,8)                        // List[Double] = List(6.0, 7.0, 8.0)
@@ -107,6 +110,7 @@ tuple match  {
 val words = List((3, "cha"),(2, "bora")).map{ case(i,s) => s * i }    // List[String] = List(chachacha, borabora)
 
 
+
 /* Maps */
 val m = Map(1->2, 3->4)
 Map("key1" -> "val1", "key2" -> "val2") foreach { case (k, v) => print(k,v) }   // (key1,val1)(key2,val2)
@@ -133,9 +137,19 @@ Array(1,2,3,4,5).filter( _ < 3 )                   // Array[Int] = Array(1, 2)
 val sortedArr = Array(1,-2,3,-4,5,-6).sorted       // Array[Int] = Array(-6, -4, -2, 1, 3, 5), original array unmodified
 
 
+
+/* For loops */
+val result = for(i <- 0 to 10; j <- 0 to i) yield (i, j)   
+
+
 /* Functions */
+def myadd(x: Int, y: Int) : Int = { return x + y } // Return type required when using return statement
+def myadd(x: Int, y: Int) : Int = { x + y }        // Return statement optional
 def myadd(x: Int, y: Int) = { x + y }              // Return type inferred
 myadd(4,5)    // Int = 9
+
+def func1(n:Int = 2, str:String = "bora") {println(str*n)}  // borabora
+func1(str="cha", n=3)                                       // chachacha
 
 def myadd2(x: Int, y: Int) : Double = { x + y }    // Return type explicit
 myadd2(4,5)   // Double = 9.0
