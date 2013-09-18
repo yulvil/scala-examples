@@ -6,13 +6,52 @@ x = 4.0
 val y = "abc"
 // y = "def" // cannot reassign val
 
+lazy val l = expensiveComputation().toString   // String = <lazy>, initialization deferred
+
+
+/* Numbers */
+
+50.toString                // String = 50
+65.toChar                  // Char = A
+123.45.toInt               // Int = 123
+math.abs(-1)               // Int = 1
+math.max(1,2)              // Int = 2
+math.max(1.0,2.0)          // Double = 2.0
+
 
 /* Strings */
 "1" * 5                    // String = 11111
-"12345".length             // [Int] = 5
+"12345".length             // Int = 5
 "abcdefghi".slice(1,3)     // String = bc
 List(1,2,3).mkString("|")  // String = 1|2|3
 List(1,2,3).mkString("{{", "|", "}}")  // String = {{1|2|3}}
+"123".toInt                // Int = 123
+"123".toDouble             // Double = 123.0
+"123" compareTo "123"      // Int = 0
+"Abcd" matches ".bc."      // Boolean = true
+"112233".distinct          // String = 123
+"abcde"(2)                 // Char = c, shortcut for "abcde".apply(2)
+s"Req: $req"               // String interpolation
+f"${1.0*5}%08.2f"          // printf style formatting
+"ab" == new String("a") + new String("b") // True, Compare strings with ==
+
+
+/* Control statements / Blocks */
+val b = 1<2                   // True
+val c = if (1>2) "a" else "b" // String = b
+val c = if (1>2) "a"          // Any = (), no else branch, every expression has 'some' value
+val c = if (1>2) "a" else ()  // Any = ()
+val c = if (1>2) "a" else if (2>3) "b" else "c"
+
+val x = { val x = 1; val y = 2; x + y } // Int = 3, last expression of block
+val x = {val a = 1}           // Unit = (), assignment has a Unit value, cannot chain assignments
+
+var i=3; while(i>0) { println(i); i=i-1 }
+
+for([pattern <- generator; definition*]+; filter*) [yield] expression
+val x = for(i<-(1 to 3); j<-(10 to 12)) yield (i,j)                           // Vector((1,10), (1,11), (1,12), (2,10), (2,11), (2,12), (3,10), (3,11), (3,12))
+for { a <- List(1,2,3); b <- List("a","b"); c <- List(4,5,6) } yield (a,b,c)  // List[(Int, String, Int)] = List((1,a,4), (1,a,5), (1,a,6), (1,b,4), (1,b,5), (1,b,6), (2,a,4), (2,a,5), (2,a,6), (2,b,4), (2,b,5), (2,b,6), (3,a,4), (3,a,5), (3,a,6), (3,b,4), (3,b,5), (3,b,6))
+val doubleEven = for (i <- 1 to 10; if i % 2 == 0) yield i * 2                // Vector(4, 8, 12, 16, 20)
 
 
 /* List */
@@ -29,15 +68,18 @@ List("Paris", "London").map(_.length)                      // List[Int] = List(5
 List(1,2,3,4,5).reduceLeft[Int](_*_)                       // Int = 120
 List(1,2,3,4,5).sum                                        // Int = 15
 List('a','b','c').zipWithIndex foreach { case(value,index) => print(value,index) }   // (a,0)(b,1)(c,2)
+val (pair,odd) = (1 to 10).partition(_%2 == 0)
 
 List(1,2,3) :: List(4,5,6)                                 // List(List(1, 2, 3), 4, 5, 6)       Adds an element at the beginning of this list.
 List(1,2,3) ::: List(4,5,6)                                // List(1, 2, 3, 4, 5, 6)             Adds the elements of a given list in front of this list.
 List(1,2,3) ++ List(4,5,6)                                 // List(1, 2, 3, 4, 5, 6)
 List(1,2,3).reverse                                        // List[Int] = List(3, 2, 1)
 List(5,3,8,6,1,9,0,7,2,4).sorted                           // List[Int] = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+List(List(1, 2), List(3, 4)).flatten                       // List[Int] = List(1, 2, 3, 4)
 
 (0 /: List(1,2,3,4,5,6,7,8,9,10))(_ + _)                   // Int = 55
 (List(1,2,3,4,5,6,7,8,9,10) :\ 0)(_ + _)                   // Int = 55
+
 
 /* Tuples */
 def minmax(a: Int, b: Int): (Int, Int) = if (a < b) (a, b) else (b, a)
@@ -64,14 +106,32 @@ tuple match  {
 
 val words = List((3, "cha"),(2, "bora")).map{ case(i,s) => s * i }    // List[String] = List(chachacha, borabora)
 
-val x = for(i<-(1 to 3); j<-(10 to 12)) yield (i,j)                   // Vector((1,10), (1,11), (1,12), (2,10), (2,11), (2,12), (3,10), (3,11), (3,12))
-for { a <- List(1,2,3); b <- List("a","b"); c <- List(4,5,6) } yield (a,b,c)
-// List[(Int, String, Int)] = List((1,a,4), (1,a,5), (1,a,6), (1,b,4), (1,b,5), (1,b,6), (2,a,4), (2,a,5), (2,a,6), (2,b,4), (2,b,5), (2,b,6), (3,a,4), (3,a,5), (3,a,6), (3,b,4), (3,b,5), (3,b,6))
 
 /* Maps */
 val m = Map(1->2, 3->4)
 Map("key1" -> "val1", "key2" -> "val2") foreach { case (k, v) => print(k,v) }   // (key1,val1)(key2,val2)
 for ((k,v) <- Map("key11" -> "val1", "key2" -> "val2")) print(k,v)              // (key1,val1)(key2,val2)
+Map("key1" -> "val1", "key2" -> "val2")("key2")                                 // String = val2
+
+
+/* Sets */
+val s = Set(1,2,2,3,3,3,4,4,4,4)                   // Set(1, 2, 3, 4)
+val s = Set(1,2) ++ Set(2,3)                       // Set(1, 2, 3)
+val s = Set(1,2) -- Set(2,3)                       // Set(1)
+val s = Set(1,2) & Set(2,3)                        // Set(2), intersect
+val s = Set(1,2) | Set(2,3)                        // Set(1, 2, 3), union
+
+/* Arrays */
+val arr = Array('a', 'b', 'c')                     // Array[Char] = Array(a, b, c)
+arr(2)                                             // Char = c
+arr.length                                         // Int = 3
+arr.update(2,'d')
+arr(2) = 'd'
+val arr = Array(1, 'a', "b")                       // Array[Any] = Array(1, a, b)
+Array(1,2,3,4,5).sum                               // Int = 15
+Array(1,2,3,4,5).filter( _ < 3 )                   // Array[Int] = Array(1, 2)
+val sortedArr = Array(1,-2,3,-4,5,-6).sorted       // Array[Int] = Array(-6, -4, -2, 1, 3, 5), original array unmodified
+
 
 /* Functions */
 def myadd(x: Int, y: Int) = { x + y }              // Return type inferred
@@ -86,21 +146,47 @@ addme(10,20)  // Int = 30
 val addmePartially = addme(5, _: Int)              // Need to specify type
 addmePartially(6)  // Int = 11
 
+val f = ((x:Int) => x+3).compose((x:Int) => x*2)   // Int => Int = <function1>
+f(5)                                               // Int = 13 
+
+def logMsg(key: String, message: String) = {println(String.format("%s: %s\n",key,message))}
+val logCurrentMessage = logMsg("ABC", _: String);
+logCurrentMessage("Step1");
+logCurrentMessage("Step2");
+
 val myadder = addme
 myadder(10,11)     // Int = 21
 
 val myadder = myadd _
 myadder(10,11)     // Int = 21
 
-def sum( args:Int* ) : Int = args.reduceLeft[Int](_+_)  // Variable args
-sum(1,2,3,4,5)     // Int = 15
+def printResp() { println("Resp") }                // Unit, aka void for procedure
+
+def sum( args: Int* ) = args.reduceLeft[Int](_+_)  // Variable args
+sum(1,2,3,4,5)                                     // Int = 15
+sum(1 to 5: _*)                                    // Expand argument
+def max(values: Int*) = values.foldLeft(values(0)) { Math.max }
 
 val L = List       // Reassign function
 L(1,2,3)           // List[Int] = List(1, 2, 3)
 
-def concat(s1:String, s2:String) = { s1 + s2 }
-concat( s2 = "World", s1 = "Hello " )      // Named parameters. String = Hello World
+def concat(s1: String, s2: String) = { s1 + s2 }
+concat( s2 = "World", s1 = "Hello " )              // Named parameters. String = Hello World
 
+def madMethod() = { throw new IllegalArgumentException() } // return type Nothing
+
+def maybe(i: Int) = { if (i>0) Some("Ok") else None }  // (i: Int)Option[String]
+maybe(1).getOrElse("Failure")                          // String = Ok
+maybe(0).getOrElse("Failure")                          // String = Failure
+
+class CloseableResource private() {
+	private def cleanUp() {}
+}
+
+def writeToFile(fileName: String)(codeBlock : PrintWriter => Unit) = {
+  val writer = new PrintWriter(new File(fileName))
+  try { codeBlock(writer) } finally { writer.close() }
+}
 
 /* Closure */
 def adder(i: Int) = (n: Int) => n + i
@@ -138,8 +224,93 @@ val a = new Point(4,6)
 a.x     // Int = 4
 a.y     // Int = 6
 
+class Misc(val x:Int, var y:Int, z:Int)
+// Scala defined x as private final field and created a public method x()
+// Scala defined y as private field and created a public getter and setter
+// Scala defined z as private field and created a private getter and setter
+
+class Hair {
+  println("Init")  // Executed as part of the primary constructor
+  
+  def this(i: Int) { this(); println(s"Init $i") } // Secondary constructor
+}
+
 class Point(val x:Int, val y:Int) {
   override def toString = "{x=%s,y=%s}".format(x,y)
+}
+
+object Pool { // Singleton
+  def getConnection() = "Ok"
+}
+
+class Controller {
+  def start() = println("Starting")
+  def stop() = println("Stopping")
+  private def troubleshoot = println("Troubleshooting")
+}
+
+// Companion class provides class-level convenience methods (Java static methods).
+// Defined in the same file as the class
+object Controller {
+
+}
+
+
+/* Regular Expressions */
+"(S|s)cala".r findFirstIn "Scala is scalable"        // Option[String] = Some(Scala)
+"(S|s)cala".r findAllIn "Scala is scalable"          // MatchIterator = non-empty iterator
+("(S|s)cala".r findAllIn "Scala is scalable").toList // List[String] = List(Scala, scala)
+"ca*".r replaceFirstIn ("Scala is scalable", "zz")   // String = Szzla is scalable
+"ca*".r replaceAllIn ("Scala is scalable", "zz")     // String = Szzla is szzlable
+
+
+/* Case Classes / Pattern matching */
+// object(args) is just syntactic sugar for object.apply(args)
+// Functions are no more than objects.
+
+def processMessage(msg: Any) = {
+  val RE = """(\w*):(\d*)""".r
+  msg match {
+    case (a,b) => (b,a)
+	case msg: Int => -msg
+	case RE("IBM",price) => "sell"
+	case RE(symbol,price) => (price,symbol)
+	case msg: String => msg.reverse
+	case _ => "Error"
+  }
+}
+processMessage((1,2))                         // Any = (2,1)
+processMessage("abc")                         // Any = cba
+processMessage(12345)                         // Any = -12345
+processMessage("IBM:123")                     // Any = Sell
+processMessage("ABC:123")                     // Any = (123,ABC)
+processMessage(123.1)                         // Any = Error
+
+object EMail {
+  // The injection method (optional)
+  def apply(user: String, domain: String) = user + "@" + domain
+
+  // The extraction method (mandatory)
+  def unapply(str: String): Option[(String, String)] = {
+    val parts = str split "@"
+    if (parts.length == 2) Some(parts(0), parts(1)) else None
+  }
+}
+
+"p@abc.com" match { case EMail(_,"nba.com") => "Nba!"; case EMail(_,"abc.com") => "Abc!" }
+EMail.unapply("John@epfl.ch")  equals  Some("John", "epfl.ch")   // Boolean = true
+
+
+/* Exception */
+
+try { ... } catch { ... } finally { ... }
+
+try {
+  val str = "hello"
+  println(str(31))
+} catch {
+  case ex : Exception => println("Exception caught" )
+  case ex : StringIndexOutOfBoundsException => println("Invalid Index" )
 }
 
 
@@ -196,3 +367,14 @@ MyParsers.parseAll(MyParsers.expr, "123 456")
 res2: MyParsers.ParseResult[Any] = [1.8] parsed: -333
 
 Iterator.continually(Console.readLine).takeWhile(_ != "").foreach(line => println("read " + line))
+
+
+/* Testing */
+class CanaryTest extends org.scalatest.Suite { def testOK() {assert(true)} }
+(new CanaryTest).execute()
+
+
+/* Misc */
+val source = scala.io.Source.fromURL(new java.net.URL("http://www.google.com"))
+val page = source.mkString
+
